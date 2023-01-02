@@ -284,7 +284,7 @@ while($res2=mysql_fetch_assoc($sql2)){ ?>
 	  <th rowspan="2" scope="col" style="width:30px;vertical-align:middle;">Month</th>
 	  <th rowspan="2" scope="col" style="width:30px;vertical-align:middle;">Total<br />Claim</th>
 	  <th rowspan="2" scope="col" style="width:50px;vertical-align:middle;">Amount<br />Claim</th>
-	  <th rowspan="2" scope="col" style="width:50px;vertical-align:middle;">Courier<br />Detail</th>
+	  <th colspan="2" scope="col" style="width:50px;vertical-align:middle;">Courier Detail</th>
 	  
 	  <th colspan="2" scope="col" style="vertical-align:middle;">Approved</th>
 	  <th colspan="3" scope="col" style="vertical-align:middle;">Paid</th>
@@ -294,6 +294,8 @@ while($res2=mysql_fetch_assoc($sql2)){ ?>
 	  <th rowspan="2" scope="col" style="width:50px;vertical-align:middle;">Direct<br />Print</th>
 	</tr>
 	<tr style="height:25px;">
+	  <th scope="col" style="width:50px;vertical-align:middle;">Send</th>
+	  <th scope="col" style="width:60px;vertical-align:middle;">Received</th>  
 	  <th scope="col" style="width:50px;vertical-align:middle;">Amount</th>
 	  <th scope="col" style="width:60px;vertical-align:middle;">Date</th>
 	  <th scope="col" style="width:50px;vertical-align:middle;">Amount</th>
@@ -316,6 +318,9 @@ while($res2=mysql_fetch_assoc($sql2)){ ?>
 	<td><span class="btn btn-sm btn-outline-primary font-weight-bold"><?=$mlist['Total_Claim'];?></span></td>
 	<td><?php if($mlist['Claim_Amount']>0){echo intval($mlist['Claim_Amount']).'/-';} ?></td>
 	<td style="cursor:pointer;text-decoration:underline;"><span onclick="FUnOPen(<?=$sn?>)">click</span></td>
+	
+	<td style="width:50px;"><?php if($mlist['RecevingDate']!='0000-00-00' AND $mlist['RecevingDate']!='1970-01-01'){echo date("d-m-Y",strtotime($mlist['RecevingDate']));} ?></td>
+	
 	<td><?php if($mlist['Approved_Amount']>0){echo intval($mlist['Approved_Amount']).'/-';} ?></td>
 	<td><?php if($mlist['Approved_Amount']>0){echo date("d-m-y",strtotime($mlist['Approved_Date']));}?></td>	 
 	<td><?php if($mlist['Fin_PayAmt']>0){ echo intval($mlist['Fin_AdvancePay']+$mlist['Fin_PayAmt']).'/-';} ?></td>

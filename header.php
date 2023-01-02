@@ -23,7 +23,7 @@ $DatAcc=date("Y-m-d",strtotime($rqry['DateOfSepration'].'+15 day'));
  {
   $num=1;       
  }
- elseif($_SESSION['EmpCode']==506)
+ elseif($_SESSION['EmpCode']==506 OR $_SESSION['EmpCode']==526)
  {
   $num=1;
  }

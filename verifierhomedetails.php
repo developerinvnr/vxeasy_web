@@ -78,8 +78,9 @@ function FunChk(v){ $('#chkval').val(v); }
 function FselMonth()
 { 
  var chkval=$('#chkval').val(); var SelMonth =$('#SelMonth').val();
+ var SelVe =$('#SelVe').val();
  if(SelMonth==''){alert("please select month"); return false; }
- window.location="home.php?action=displayrec&v="+SelMonth+"&chkval="+chkval;
+ window.location="home.php?action=displayrec&v="+SelMonth+"&chkval="+chkval+"&ve="+SelVe;
 }
 
 function FunPrint(e,m,y,n)
@@ -117,6 +118,22 @@ function ExpAP(v,m,e,y,t)
 	  <option value="04" <?php if($_REQUEST['v']==4){echo 'selected';}?>>April</option>
    </select>
    &nbsp;
+   <select style="font-size:14px; width:180px;" id="SelVe" >
+  <option value="0" <?php if($_REQUEST['ve']=='' || $_REQUEST['ve']==0){echo 'selected';}?>>All Employee</option>			  
+  <?php  
+  $seleqe=mysql_query("SELECT EmployeeID as CrBy FROM `y".$_SESSION['FYearId']."_monthexpensefinal` WHERE YearId=".$_SESSION['FYearId']." and `Status`='Closed' and Total_Claim>0 and (Verified_Amount=0 OR Verified_Date='0000-00-00') group by EmployeeID order by CrBy ASC"); //and g.CostCenter in (".$state_data.")
+
+  while($expe=mysql_fetch_assoc($seleqe))
+  { 
+
+   $senn=mysql_query("select EmpCode, Fname, Sname, Lname from hrm_employee where EmployeeID=".$expe['CrBy'],$con2); 
+   $expnn=mysql_fetch_assoc($senn);
+  ?>
+  <option value="<?=$expe['CrBy']?>" <?php if($_REQUEST['ve']==$expe['CrBy']){echo 'selected';}?>><?=$expnn['EmpCode'].' - '.$expnn['Fname'].' '.$expnn['Sname'].' '.$expnn['Lname']?></option>
+  <?php } //while ?>								  
+ </select>
+ 
+   &nbsp;
    <a class="btn btn-sm btn-primary" onclick="FselMonth()"><i class="fa fa-btn" aria-hidden="true"></i><span style="color:#FFFFFF; width:80px;">&nbsp;&nbsp;&nbsp;Click&nbsp;&nbsp;&nbsp;</span></a>   
    &nbsp;&nbsp;&nbsp; 
    <a class="btn btn-sm btn-primary" href="javascript:location.reload(true)"><i class="fa fa-refresh" aria-hidden="true"></i> Refresh</a>
@@ -145,8 +162,11 @@ function ExpAP(v,m,e,y,t)
       <tbody>
 	  
 <?php if($_REQUEST['v']=='' || $_REQUEST['v']==0){ $cond='1=1'; }else{ $cond='Month='.$_REQUEST['v']; }
+
+if($_REQUEST['ve']>0){ $empQ="EmployeeID=".$_REQUEST['ve']; }
+else{ $empQ="1=1"; }
 				
-	  $sql_statement=mysql_query("SELECT * FROM `y".$_SESSION['FYearId']."_monthexpensefinal` WHERE YearId=".$_SESSION['FYearId']." and `Status`='Closed' and Total_Claim>0 and Fin_PayAmt>=0 and Fin_PayOption!='' and Fin_PayBy>0 and (Verified_Amount=0 OR Verified_Date='0000-00-00' OR Finance_Amount=0 OR Finance_Date='0000-00-00' OR Fin_AppBy=0) and ".$cond." order by Month asc, EmployeeID asc");			
+	  $sql_statement=mysql_query("SELECT * FROM `y".$_SESSION['FYearId']."_monthexpensefinal` WHERE YearId=".$_SESSION['FYearId']." and `Status`='Closed' and Total_Claim>0 and Fin_PayAmt>=0 and Fin_PayOption!='' and Fin_PayBy>0 and (Verified_Amount=0 OR Verified_Date='0000-00-00' OR Finance_Amount=0 OR Finance_Date='0000-00-00' OR Fin_AppBy=0) and ".$empQ." and ".$cond." order by Month asc, EmployeeID asc");			
 					
 $total_records = mysql_num_rows($sql_statement);
 if(isset($_GET['page']))
@@ -160,7 +180,7 @@ $from = ($page * $offset) - $offset;
 $from = 0;
 }					
 	  			
-      $m=mysql_query("SELECT * FROM `y".$_SESSION['FYearId']."_monthexpensefinal` WHERE YearId=".$_SESSION['FYearId']." and `Status`='Closed' and Total_Claim>0 and Fin_PayAmt>=0 and Fin_PayOption!='' and Fin_PayBy>0 and (Verified_Amount=0 OR Verified_Date='0000-00-00' OR Finance_Amount=0 OR Finance_Date='0000-00-00' OR Fin_AppBy=0) and ".$cond." order by Month asc, EmployeeID asc LIMIT ".$from.",".$offset);  
+      $m=mysql_query("SELECT * FROM `y".$_SESSION['FYearId']."_monthexpensefinal` WHERE YearId=".$_SESSION['FYearId']." and `Status`='Closed' and Total_Claim>0 and Fin_PayAmt>=0 and Fin_PayOption!='' and Fin_PayBy>0 and (Verified_Amount=0 OR Verified_Date='0000-00-00' OR Finance_Amount=0 OR Finance_Date='0000-00-00' OR Fin_AppBy=0) and ".$empQ." and ".$cond." order by Month asc, EmployeeID asc LIMIT ".$from.",".$offset);  
       $sn=1;
 	  while($mlist=mysql_fetch_assoc($m))
       {			
